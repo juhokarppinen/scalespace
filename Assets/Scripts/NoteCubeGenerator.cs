@@ -33,7 +33,7 @@ public class NoteCubeGenerator : MonoBehaviour
     newCube.SetNote(note);
     newCube.SetColor(color);
     newCube.SetPlayer(forPlayer);
-    newCube.HideNoteTexts(gameController.GetHintDisplayTime(note));
+    newCube.HideNoteTexts(gameController.GetHintDisplayTime(forPlayer, note));
     newCube.transform.parent = GameObject.Find("Active Cubes").transform;
     Helpers.Instantiate(particleEffect, transform.position, Quaternion.identity, "Particle Effects");
   }

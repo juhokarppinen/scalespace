@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
   private VisibilityToggle musicMat;
   private InformationCanvas infoDisplay;
   private ScoreCanvas[] scoreDisplays;
-  private Dictionary<string, int> hintDisplayTime;
+  private Dictionary<string, int>[] hintDisplayTime;
 
   public bool IsInMenu { get { return gameState == GameState.Menu; } }
 
@@ -37,13 +37,22 @@ public class GameController : MonoBehaviour
 
   void Start()
   {
-    hintDisplayTime = new Dictionary<string, int>{
-      {"1",5 },
-      {"2",5 },
-      {"3",5 },
-      {"4",5 },
-      {"5",5 },
-      };
+    hintDisplayTime = new [] {
+      new Dictionary<string, int> {
+        {"1", 5},
+        {"2", 5},
+        {"3", 5},
+        {"4", 5},
+        {"5", 5},
+      },
+      new Dictionary<string, int> {
+        {"1", 5},
+        {"2", 5},
+        {"3", 5},
+        {"4", 5},
+        {"5", 5},
+      }
+    };
     scores = new[] { new Score(), new Score() };
     levels = new Level[] {
       new Level(1, new [] { "1", "5" }),
@@ -67,9 +76,9 @@ public class GameController : MonoBehaviour
     }
   }
 
-  public float GetHintDisplayTime(string forNote)
+  public float GetHintDisplayTime(int player, string forNote)
   {
-    return hintDisplayTime[forNote];
+    return hintDisplayTime[player -1][forNote];
   }
 
   public void StartGame()
@@ -87,7 +96,7 @@ public class GameController : MonoBehaviour
 
   public void Hit(int player, string note)
   {
-    DecreaseHintTime(note);
+    DecreaseHintTime(player, note);
     scores[player - 1].Hit();
     if (swarm.CubeDestroyed() <= 0)
       SetLevel(level.levelNumber + 1);
@@ -95,7 +104,7 @@ public class GameController : MonoBehaviour
 
   public void Collide(int player, string note)
   {
-    IncreaseHintTime(note);
+    IncreaseHintTime(player, note);
     Miss(player);
   }
 
@@ -165,15 +174,15 @@ public class GameController : MonoBehaviour
       cube.Explode();
   }
 
-  private void IncreaseHintTime(string forNote)
+  private void IncreaseHintTime(int player, string forNote)
   {
-    hintDisplayTime[forNote] += 1;
-    if (hintDisplayTime[forNote] > 5) hintDisplayTime[forNote] = 5;
+    hintDisplayTime[player - 1][forNote] += 1;
+    if (hintDisplayTime[player - 1][forNote] > 5) hintDisplayTime[player - 1][forNote] = 5;
   }
 
-  private void DecreaseHintTime(string forNote)
+  private void DecreaseHintTime(int player, string forNote)
   {
-    hintDisplayTime[forNote] -= 1;
-    if (hintDisplayTime[forNote] < 0) hintDisplayTime[forNote] = 0;
+    hintDisplayTime[player - 1][forNote] -= 1;
+    if (hintDisplayTime[player -1][forNote] < 0) hintDisplayTime[player - 1][forNote] = 0;
   }
 }
